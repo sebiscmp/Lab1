@@ -372,3 +372,31 @@ function makeSumSummaryGraph(names,watts) {
   });
 }
 
+function makeSumSummaryLineGraph(names,watts) {
+	
+  const ctx = document.getElementById('chart3');
+  
+  if (summaryWhrChart) destroyWhrChart();
+	
+  summaryWhrChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: names,
+      datasets: [{
+        label: 'Kilowatt hours',
+        data: watts,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      //indexAxis: 'y',
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+

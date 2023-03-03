@@ -209,7 +209,6 @@ function displayAllSiteTodayWatts(data){
 	});
 	console.log(JSON.stringify(names),JSON.stringify(whrs));
 	makeSumSummaryGraph(names,whrs);
-	makeSumSummaryLineGraph(names,whrs);
 }
 
 // Process All Site watts by hour for that day
@@ -223,8 +222,6 @@ function processAllSiteTodayWatts(results) {
 	
 	//console.log(JSON.stringify(data));
 	document.querySelector('#output2').innerHTML += "<h1>Total Kilowatts today</h1>";
-	displayAllSiteTodayWatts(data);
-	document.querySelector('#output3').innerHTML += "<h1>Line Graph</h1>";
 	displayAllSiteTodayWatts(data);
 }
 
@@ -375,6 +372,8 @@ function makeSumSummaryGraph(names,watts) {
   });
 }
 
+
+
 function makeSumSummaryLineGraph(names,watts) {
 	
   const ctx = document.getElementById('chart3');
@@ -401,4 +400,3 @@ function makeSumSummaryLineGraph(names,watts) {
     }
   });
 }
-

@@ -371,4 +371,3 @@ function makeSumSummaryGraph(names,watts) {
     }
   });
 }
-

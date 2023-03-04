@@ -19,6 +19,7 @@ const QueryErr = '<p style="color:red">ErQuery failed';
 var siteMap = {};  // A global place to store MAC to School name map
 var summaryChart = 0;
 var summaryWhrChart = 0;
+const allSitesDailyyWatts="&Query=SolarHistorySummary(*,qHistoryWattsDay1,%DATE%*)";
 
 
 // Add an event listener for each item in the pull down menu
@@ -370,4 +371,106 @@ function makeSumSummaryGraph(names,watts) {
       }
     }
   });
+}
+
+
+
+
+function getSitesHourlylyWatts() 
+{
+    var command= Url+allSitesDailyWatts;
+    command=command.replace("%DATE%",yesterdaysDate());
+    fetch(command, {
+method: 'get'
+    })
+.then (response => response.json() )
+        .then (data => ProcessSitesHourlyWatts(data))
+.catch(error => {
+   document.querySelector('#output3').innerHTML = ErrSrv+": Get all sites' hourly watts for today";
+})
+
+}
+
+
+function yesterdaysDate() {
+var today = new Date();
+today.setDate(today.getDate()-1);
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+var date = yyyy +'-'+ mm +'-'+ dd;
+return date;
+}
+
+
+function ProcessSitesHourlyWatts(results)
+{
+var data = results['message'];
+if (!results["success"]) {
+document.querySelector('#output3').innerHTML = QueryErr+"Get all sites hourly watts for today";
+return;
+}
+wattsLabel = ["6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm"];
+yesterday = yesterdaysDate();
+//clearCanvas();
+dataList = results['message'];
+names=[]
+wattsData = [];
+dataList.forEach(function(site) {
+siteDate = site[2].split(" ")[0];
+if (siteDate == yesterday)
+{
+wattsData.push(site[3]);
+names.push(siteMap[site[0]]);
+}
+});
+ HourlyGraph(wattsData, wattsLabel, names);
+}*/
+
+
+function HourlyGraph(values, labels, names)
+
+{
+const ctx = document.getElementById('chart3');
+let series = [];
+let categories = [];
+for (let x = 0; x < names.length; x++)
+ {
+  series.push({
+    name: names[x],
+    data: values[x]
+  });
+}
+
+var chart = new ApexCharts(ctx, {
+  chart: {
+    height: 380,
+    width: "100%",
+    type: "line"
+  },
+  stroke: {
+    curve: 'smooth',
+    width: 1.5,
+  },
+  markers: {
+    size: 4,
+  },
+  legend: {
+    show: true,
+    position: 'top'
+  },
+  series: series,
+  xaxis: {
+    categories: labels,
+    title: {
+      text: "Schools"
+    }
+  },
+  yaxis: {
+    title: {
+      text: "Hourly Watts"
+    }
+  }
+});
+//chart.render();
 }
